@@ -101,7 +101,7 @@ const GhibliFilter: React.FC<GhibliFilterProps> = ({ videoElement, isFilterActiv
 
     // Animation loop
     const render = () => {
-      if (!videoElement.paused && !videoElement.ended) {
+      if (videoElement.readyState >= 2 && !videoElement.paused && !videoElement.ended) {
         if (isFilterActive) {
           applyGhibliEffect(ctx);
         } else {
@@ -109,7 +109,7 @@ const GhibliFilter: React.FC<GhibliFilterProps> = ({ videoElement, isFilterActiv
         }
         requestIdRef.current = requestAnimationFrame(render);
       } else {
-        // If video is paused, try again after a short delay
+        // If video is not ready or paused, try again after a short delay
         setTimeout(() => {
           requestIdRef.current = requestAnimationFrame(render);
         }, 100);
@@ -133,6 +133,7 @@ const GhibliFilter: React.FC<GhibliFilterProps> = ({ videoElement, isFilterActiv
       width={dimensions.width}
       height={dimensions.height}
       className="max-w-full h-auto rounded-lg shadow-lg mx-auto"
+      style={{ display: 'block' }}
     />
   );
 };

@@ -14,8 +14,12 @@ const Index = () => {
 
   const handleVideoReady = (video: HTMLVideoElement) => {
     console.log("Video element received in Index component:", video);
-    setVideoElement(video);
-    toast.success("Camera ready! Ghibli transformation active.");
+    if (video) {
+      // Ensure the video is playing
+      video.play().catch(err => console.error("Error playing video:", err));
+      setVideoElement(video);
+      toast.success("Camera ready! Ghibli transformation active.");
+    }
   };
 
   const handleFilterToggle = () => {

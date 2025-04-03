@@ -72,7 +72,8 @@ const WebcamCapture: React.FC<WebcamCaptureProps> = ({ onVideoReady }) => {
         autoPlay 
         playsInline 
         muted 
-        className={`max-w-full h-auto ${isLoading ? 'invisible' : 'visible'}`}
+        style={{ display: 'block', width: '100%' }}
+        className={`h-auto ${isLoading ? 'invisible' : 'visible'}`}
       />
     </div>
   );
