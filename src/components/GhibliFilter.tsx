@@ -13,12 +13,20 @@ const GhibliFilter: React.FC<GhibliFilterProps> = ({ videoElement, isFilterActiv
 
   useEffect(() => {
     if (videoElement) {
-      console.log("Video dimensions:", videoElement.videoWidth, videoElement.videoHeight);
-      // Set canvas dimensions to match the video
-      setDimensions({
-        width: videoElement.videoWidth || 640,
-        height: videoElement.videoHeight || 480
-      });
+      const checkDimensions = () => {
+        if (videoElement.videoWidth && videoElement.videoHeight) {
+          console.log("Setting video dimensions:", videoElement.videoWidth, videoElement.videoHeight);
+          setDimensions({
+            width: videoElement.videoWidth,
+            height: videoElement.videoHeight
+          });
+        } else {
+          // If dimensions are not available yet, check again in 100ms
+          setTimeout(checkDimensions, 100);
+        }
+      };
+      
+      checkDimensions();
     }
   }, [videoElement]);
 
@@ -107,13 +115,14 @@ const GhibliFilter: React.FC<GhibliFilterProps> = ({ videoElement, isFilterActiv
         } else {
           renderOriginal();
         }
-        requestIdRef.current = requestAnimationFrame(render);
       } else {
-        // If video is not ready or paused, try again after a short delay
-        setTimeout(() => {
-          requestIdRef.current = requestAnimationFrame(render);
-        }, 100);
+        // If video is not ready or paused, try again
+        console.log("Video not ready, paused or ended. Trying again...");
+        if (videoElement.paused) {
+          videoElement.play().catch(err => console.error("Error playing video:", err));
+        }
       }
+      requestIdRef.current = requestAnimationFrame(render);
     };
 
     // Start the rendering loop

@@ -10,7 +10,6 @@ const Index = () => {
   const [videoElement, setVideoElement] = useState<HTMLVideoElement | null>(null);
   const [isFilterActive, setIsFilterActive] = useState(true);
   const [screenshot, setScreenshot] = useState<string | null>(null);
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const handleVideoReady = (video: HTMLVideoElement) => {
     console.log("Video element received in Index component:", video);
@@ -44,7 +43,7 @@ const Index = () => {
     const ctx = tempCanvas.getContext("2d");
     
     if (ctx) {
-      // Simply grab what's displayed in the GhibliFilter canvas
+      // Grab what's displayed in the GhibliFilter canvas
       const displayedCanvas = document.querySelector("canvas");
       if (displayedCanvas) {
         ctx.drawImage(displayedCanvas, 0, 0, videoWidth, videoHeight);

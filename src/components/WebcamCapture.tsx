@@ -27,6 +27,7 @@ const WebcamCapture: React.FC<WebcamCaptureProps> = ({ onVideoReady }) => {
             setIsLoading(false);
             if (videoRef.current) {
               console.log("Video is ready and loaded");
+              videoRef.current.play().catch(err => console.error("Error playing video:", err));
               onVideoReady(videoRef.current);
             }
           };
