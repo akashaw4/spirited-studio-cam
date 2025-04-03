@@ -21,7 +21,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
       <div className="flex items-center space-x-4">
         <Switch id="filter-toggle" checked={isFilterActive} onCheckedChange={onFilterToggle} />
         <Label htmlFor="filter-toggle" className="font-medium text-ghibli-night">
-          Ghibli Filter {isFilterActive ? "On" : "Off"}
+          Anime Ghibli Style {isFilterActive ? "On" : "Off"}
         </Label>
       </div>
 
@@ -30,7 +30,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
         className="bg-ghibli-accent hover:bg-ghibli-accent/90 text-white"
       >
         <Camera className="w-4 h-4 mr-2" />
-        Capture Moment
+        Capture Anime Moment
       </Button>
     </div>
   );

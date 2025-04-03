@@ -17,13 +17,13 @@ const Index = () => {
       // Ensure the video is playing
       video.play().catch(err => console.error("Error playing video:", err));
       setVideoElement(video);
-      toast.success("Camera ready! Ghibli transformation active.");
+      toast.success("Camera ready! Anime Ghibli transformation active.");
     }
   };
 
   const handleFilterToggle = () => {
     setIsFilterActive(!isFilterActive);
-    toast.info(isFilterActive ? "Original view" : "Ghibli filter applied");
+    toast.info(isFilterActive ? "Original view" : "Anime Ghibli style applied");
   };
 
   const handleScreenshot = () => {
@@ -49,7 +49,7 @@ const Index = () => {
         ctx.drawImage(displayedCanvas, 0, 0, videoWidth, videoHeight);
         const dataUrl = tempCanvas.toDataURL("image/png");
         setScreenshot(dataUrl);
-        toast.success("Moment captured in Ghibli style!");
+        toast.success("Anime style moment captured!");
       } else {
         toast.error("Couldn't capture screenshot");
       }
@@ -65,10 +65,10 @@ const Index = () => {
       <div className="max-w-4xl mx-auto">
         <header className="text-center mb-8">
           <h1 className="text-3xl md:text-4xl font-bold text-ghibli-night mb-2 animate-float">
-            Studio Ghibli Camera
+            Studio Ghibli Anime Camera
           </h1>
           <p className="text-ghibli-night/80 text-lg">
-            Transform your world into the magical style of Studio Ghibli
+            Transform your world into hand-drawn anime style inspired by Studio Ghibli
           </p>
         </header>
 
@@ -100,7 +100,7 @@ const Index = () => {
 
         <footer className="mt-8 text-center text-sm text-ghibli-night/60">
           <p>
-            Inspired by the magical worlds of Studio Ghibli
+            Inspired by the magical hand-drawn worlds of Studio Ghibli and classic anime
           </p>
         </footer>
       </div>
