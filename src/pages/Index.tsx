@@ -1,108 +1,11 @@
-
-import React, { useState, useRef } from "react";
-import WebcamCapture from "@/components/WebcamCapture";
-import GhibliFilter from "@/components/GhibliFilter";
-import ControlPanel from "@/components/ControlPanel";
-import ScreenshotDownload from "@/components/ScreenshotDownload";
-import { toast } from "sonner";
+// Update this page (the content is just a fallback if you fail to update the page)
 
 const Index = () => {
-  const [videoElement, setVideoElement] = useState<HTMLVideoElement | null>(null);
-  const [isFilterActive, setIsFilterActive] = useState(true);
-  const [screenshot, setScreenshot] = useState<string | null>(null);
-
-  const handleVideoReady = (video: HTMLVideoElement) => {
-    console.log("Video element received in Index component:", video);
-    if (video) {
-      // Ensure the video is playing
-      video.play().catch(err => console.error("Error playing video:", err));
-      setVideoElement(video);
-      toast.success("Camera ready! Anime Ghibli transformation active.");
-    }
-  };
-
-  const handleFilterToggle = () => {
-    setIsFilterActive(!isFilterActive);
-    toast.info(isFilterActive ? "Original view" : "Anime Ghibli style applied");
-  };
-
-  const handleScreenshot = () => {
-    if (!videoElement) {
-      toast.error("Camera not ready yet");
-      return;
-    }
-    
-    // Create a temporary canvas to capture the current filtered frame
-    const tempCanvas = document.createElement("canvas");
-    const videoWidth = videoElement.videoWidth || 640;
-    const videoHeight = videoElement.videoHeight || 480;
-    
-    tempCanvas.width = videoWidth;
-    tempCanvas.height = videoHeight;
-    
-    const ctx = tempCanvas.getContext("2d");
-    
-    if (ctx) {
-      // Grab what's displayed in the GhibliFilter canvas
-      const displayedCanvas = document.querySelector("canvas");
-      if (displayedCanvas) {
-        ctx.drawImage(displayedCanvas, 0, 0, videoWidth, videoHeight);
-        const dataUrl = tempCanvas.toDataURL("image/png");
-        setScreenshot(dataUrl);
-        toast.success("Anime style moment captured!");
-      } else {
-        toast.error("Couldn't capture screenshot");
-      }
-    }
-  };
-
-  const closeScreenshot = () => {
-    setScreenshot(null);
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-b from-ghibli-sky to-ghibli-cloud p-4">
-      <div className="max-w-4xl mx-auto">
-        <header className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-ghibli-night mb-2 animate-float">
-            Studio Ghibli Anime Camera
-          </h1>
-          <p className="text-ghibli-night/80 text-lg">
-            Transform your world into hand-drawn anime style inspired by Studio Ghibli
-          </p>
-        </header>
-
-        <div className="rounded-xl overflow-hidden shadow-2xl bg-white/10 backdrop-blur-sm p-6">
-          <div className="mb-6">
-            {videoElement ? (
-              <GhibliFilter
-                videoElement={videoElement}
-                isFilterActive={isFilterActive}
-              />
-            ) : (
-              <WebcamCapture onVideoReady={handleVideoReady} />
-            )}
-          </div>
-
-          <ControlPanel
-            isFilterActive={isFilterActive}
-            onFilterToggle={handleFilterToggle}
-            onScreenshot={handleScreenshot}
-          />
-
-          {screenshot && (
-            <ScreenshotDownload
-              imageUrl={screenshot}
-              onClose={closeScreenshot}
-            />
-          )}
-        </div>
-
-        <footer className="mt-8 text-center text-sm text-ghibli-night/60">
-          <p>
-            Inspired by the magical hand-drawn worlds of Studio Ghibli and classic anime
-          </p>
-        </footer>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="text-center">
+        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
+        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
       </div>
     </div>
   );
