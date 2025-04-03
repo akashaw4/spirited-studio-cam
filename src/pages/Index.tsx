@@ -13,6 +13,7 @@ const Index = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const handleVideoReady = (video: HTMLVideoElement) => {
+    console.log("Video element received in Index component:", video);
     setVideoElement(video);
     toast.success("Camera ready! Ghibli transformation active.");
   };
@@ -23,31 +24,32 @@ const Index = () => {
   };
 
   const handleScreenshot = () => {
-    if (!canvasRef.current) {
-      // Create a temporary canvas to capture the current filtered frame
-      const tempCanvas = document.createElement("canvas");
-      const videoWidth = videoElement?.videoWidth || 640;
-      const videoHeight = videoElement?.videoHeight || 480;
-      
-      tempCanvas.width = videoWidth;
-      tempCanvas.height = videoHeight;
-      
-      const ctx = tempCanvas.getContext("2d");
-      
-      if (ctx && videoElement) {
-        // Simply grab what's displayed in the GhibliFilter canvas
-        const displayedCanvas = document.querySelector("canvas");
-        if (displayedCanvas) {
-          ctx.drawImage(displayedCanvas, 0, 0, videoWidth, videoHeight);
-          const dataUrl = tempCanvas.toDataURL("image/png");
-          setScreenshot(dataUrl);
-          toast.success("Moment captured in Ghibli style!");
-        } else {
-          toast.error("Couldn't capture screenshot");
-        }
+    if (!videoElement) {
+      toast.error("Camera not ready yet");
+      return;
+    }
+    
+    // Create a temporary canvas to capture the current filtered frame
+    const tempCanvas = document.createElement("canvas");
+    const videoWidth = videoElement.videoWidth || 640;
+    const videoHeight = videoElement.videoHeight || 480;
+    
+    tempCanvas.width = videoWidth;
+    tempCanvas.height = videoHeight;
+    
+    const ctx = tempCanvas.getContext("2d");
+    
+    if (ctx) {
+      // Simply grab what's displayed in the GhibliFilter canvas
+      const displayedCanvas = document.querySelector("canvas");
+      if (displayedCanvas) {
+        ctx.drawImage(displayedCanvas, 0, 0, videoWidth, videoHeight);
+        const dataUrl = tempCanvas.toDataURL("image/png");
+        setScreenshot(dataUrl);
+        toast.success("Moment captured in Ghibli style!");
+      } else {
+        toast.error("Couldn't capture screenshot");
       }
-    } else {
-      toast.error("Screenshot functionality not available");
     }
   };
 

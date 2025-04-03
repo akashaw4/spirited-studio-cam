@@ -13,6 +13,7 @@ const GhibliFilter: React.FC<GhibliFilterProps> = ({ videoElement, isFilterActiv
 
   useEffect(() => {
     if (videoElement) {
+      console.log("Video dimensions:", videoElement.videoWidth, videoElement.videoHeight);
       // Set canvas dimensions to match the video
       setDimensions({
         width: videoElement.videoWidth || 640,
@@ -24,6 +25,7 @@ const GhibliFilter: React.FC<GhibliFilterProps> = ({ videoElement, isFilterActiv
   useEffect(() => {
     if (!videoElement || !canvasRef.current) return;
 
+    console.log("Setting up canvas rendering with video element");
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     
@@ -106,14 +108,21 @@ const GhibliFilter: React.FC<GhibliFilterProps> = ({ videoElement, isFilterActiv
           renderOriginal();
         }
         requestIdRef.current = requestAnimationFrame(render);
+      } else {
+        // If video is paused, try again after a short delay
+        setTimeout(() => {
+          requestIdRef.current = requestAnimationFrame(render);
+        }, 100);
       }
     };
 
     // Start the rendering loop
+    console.log("Starting render loop");
     requestIdRef.current = requestAnimationFrame(render);
 
     return () => {
       // Clean up
+      console.log("Cleaning up render loop");
       cancelAnimationFrame(requestIdRef.current);
     };
   }, [videoElement, isFilterActive]);
@@ -123,7 +132,7 @@ const GhibliFilter: React.FC<GhibliFilterProps> = ({ videoElement, isFilterActiv
       ref={canvasRef}
       width={dimensions.width}
       height={dimensions.height}
-      className="max-w-full h-auto rounded-lg shadow-lg"
+      className="max-w-full h-auto rounded-lg shadow-lg mx-auto"
     />
   );
 };
