@@ -39,59 +39,88 @@ const GhibliFilter: React.FC<GhibliFilterProps> = ({ videoElement, isFilterActiv
     
     if (!ctx) return;
 
-    // Apply Ghibli-style filters
+    // Apply Ghibli-style animation-like filters
     const applyGhibliEffect = (ctx: CanvasRenderingContext2D) => {
       // Save current canvas state
       ctx.save();
       
-      // Apply a slight blur for painting effect
-      ctx.filter = 'blur(0.5px)';
-      
-      // Draw the video frame
+      // First draw the original image
       ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-      
-      // Reset filters for further modifications
-      ctx.filter = 'none';
       
       // Get image data to manipulate pixels
       const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
       const data = imageData.data;
       
-      // Enhance colors to create Ghibli look
+      // Apply Ghibli-style color palette and effects
       for (let i = 0; i < data.length; i += 4) {
-        // Soften the image by reducing contrast
+        // Enhance pastel tones - a key characteristic of Ghibli animations
         data[i] = Math.min(255, data[i] * 0.9 + 25);     // Red
         data[i + 1] = Math.min(255, data[i + 1] * 0.9 + 20); // Green
         data[i + 2] = Math.min(255, data[i + 2] * 0.85 + 30); // Blue
         
-        // Shift colors slightly toward the Ghibli palette
+        // Reduce color diversity (more cartoon-like)
+        data[i] = Math.round(data[i] / 15) * 15;
+        data[i + 1] = Math.round(data[i + 1] / 15) * 15;
+        data[i + 2] = Math.round(data[i + 2] / 15) * 15;
+        
+        // Shift colors toward typical Ghibli palette
         if (data[i] > data[i + 1] && data[i] > data[i + 2]) {
           // Warm up reddish areas (sunset tones)
-          data[i] = Math.min(255, data[i] * 1.1);
+          data[i] = Math.min(255, data[i] * 1.15);
+          data[i + 1] = Math.min(255, data[i + 1] * 0.9);
         } else if (data[i + 2] > data[i] && data[i + 2] > data[i + 1]) {
-          // Enhance blues for sky
-          data[i + 2] = Math.min(255, data[i + 2] * 1.05);
+          // Enhance blues for skies - make them more pastel blue
+          data[i] = Math.min(255, data[i] + 20);
+          data[i + 1] = Math.min(255, data[i + 1] + 20);
+          data[i + 2] = Math.min(255, data[i + 2] * 1.1);
         } else if (data[i + 1] > data[i] && data[i + 1] > data[i + 2]) {
-          // Enhance greens for foliage
-          data[i + 1] = Math.min(255, data[i + 1] * 1.05);
+          // Enhance greens for foliage - make them more vibrant
+          data[i] = Math.max(0, data[i] * 0.9);
+          data[i + 1] = Math.min(255, data[i + 1] * 1.1);
         }
       }
       
       // Put the modified pixel data back
       ctx.putImageData(imageData, 0, 0);
       
-      // Apply a watercolor-like effect using composite operations
+      // Apply line enhancement effect (slight edge detection)
+      ctx.globalCompositeOperation = 'multiply';
+      ctx.filter = 'contrast(1.1) saturate(1.2)';
+      ctx.drawImage(canvas, 0, 0);
+      
+      // Apply soft watercolor-like effect
       ctx.globalCompositeOperation = 'soft-light';
-      ctx.fillStyle = 'rgba(255, 250, 230, 0.15)'; // Warm overlay
+      ctx.fillStyle = 'rgba(255, 250, 230, 0.2)'; // Warm overlay
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
-      // Add a very subtle vignette effect
+      // Add very subtle noise texture to mimic animation cell
+      ctx.globalCompositeOperation = 'overlay';
+      const noiseCanvas = document.createElement('canvas');
+      noiseCanvas.width = canvas.width;
+      noiseCanvas.height = canvas.height;
+      const noiseCtx = noiseCanvas.getContext('2d');
+      
+      if (noiseCtx) {
+        const noiseData = noiseCtx.createImageData(canvas.width, canvas.height);
+        const noiseDataArray = noiseData.data;
+        
+        for (let i = 0; i < noiseDataArray.length; i += 4) {
+          const value = Math.floor(Math.random() * 20 - 10);
+          noiseDataArray[i] = noiseDataArray[i + 1] = noiseDataArray[i + 2] = value;
+          noiseDataArray[i + 3] = 5; // Very transparent
+        }
+        
+        noiseCtx.putImageData(noiseData, 0, 0);
+        ctx.drawImage(noiseCanvas, 0, 0);
+      }
+      
+      // Add a subtle vignette effect - characteristic of animation frames
       const gradient = ctx.createRadialGradient(
         canvas.width / 2, canvas.height / 2, 0,
         canvas.width / 2, canvas.height / 2, canvas.width / 1.5
       );
       gradient.addColorStop(0, 'rgba(0,0,0,0)');
-      gradient.addColorStop(1, 'rgba(0,0,0,0.15)');
+      gradient.addColorStop(1, 'rgba(0,0,0,0.2)');
       
       ctx.globalCompositeOperation = 'multiply';
       ctx.fillStyle = gradient;
